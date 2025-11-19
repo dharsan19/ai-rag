@@ -1,12 +1,11 @@
-# Python dependencies for backend
 fastapi
-uvicorn[standard]
-httpx
-pdfminer.six
-langchain
-langchain_openai
-langchain_community
-chromadb
-pydantic
+uvicorn
 python-dotenv
-gitpython
+langchain==0.1.20
+langchain-openai
+langchain-community
+chromadb
+pdfminer.six
+httpx
+python-multipart
+sentence-transformers

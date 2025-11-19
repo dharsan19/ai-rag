@@ -1,3 +1,0 @@
-# PDF extract, splitting utilities
-
-# ...existing code...

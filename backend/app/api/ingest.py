@@ -1,3 +1,0 @@
-# API for document ingestion
-
-# ...existing code...
