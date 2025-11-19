@@ -1,0 +1,5 @@
+# Python dependencies for backend
+
+fastapi
+uvicorn
+# ...add more as needed...
