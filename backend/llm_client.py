@@ -1,27 +1,19 @@
 import os
-import httpx
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_community.llms import Ollama
+from langchain_community.embeddings import OllamaEmbeddings
 
 load_dotenv()
 
-BASE_URL = os.getenv("BASE_URL")
-API_KEY = os.getenv("GENAI_KEY")
-LLM_MODEL = os.getenv("LLM_MODEL")
-EMBED_MODEL = os.getenv("EMBED_MODEL")
+LLM_MODEL = os.getenv("LLM_MODEL", "smollm")
+EMBED_MODEL = os.getenv("EMBED_MODEL", "jina-embeddings-v2-small-en")
 
-client = httpx.Client(verify=False)
-
-llm = ChatOpenAI(
-    base_url=BASE_URL,
+llm = Ollama(
+    base_url="http://localhost:11434",
     model=LLM_MODEL,
-    api_key=API_KEY,
-    http_client=client
 )
 
-embeddings = OpenAIEmbeddings(
-    base_url=BASE_URL,
+embeddings = OllamaEmbeddings(
+    base_url="http://localhost:11434",
     model=EMBED_MODEL,
-    api_key=API_KEY,
-    http_client=client
 )

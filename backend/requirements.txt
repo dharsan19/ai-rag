@@ -8,4 +8,6 @@ chromadb
 pdfminer.six
 httpx
 python-multipart
+requests
 sentence-transformers
+langgraph
