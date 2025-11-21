@@ -111,17 +111,21 @@ def add_texts_to_session(user_id: str, session_id: str, text: str) -> dict:
     sd = _session_dir(user_id, session_id)
     os.makedirs(os.path.dirname(sd), exist_ok=True)
     chunks = _chunk_text(text)
+    print(f"DEBUG: Chunked text into {len(chunks)} chunks for session {session_id}")
     if not chunks:
         return {"indexed_chunks":0, "status":"no_text"}
     if not os.path.exists(sd) or not os.listdir(sd):
+        print(f"DEBUG: Creating new session vector store at {sd}")
         vectordb = Chroma.from_texts(chunks, embeddings, persist_directory=sd)
         vectordb.persist()
         return {"indexed_chunks": len(chunks), "status":"created"}
     else:
+        print(f"DEBUG: Adding to existing session vector store at {sd}")
         vectordb = Chroma(persist_directory=sd, embedding_function=embeddings)
         try:
             vectordb.add_texts(chunks)
-        except Exception:
+        except Exception as e:
+            print(f"DEBUG: Error adding texts: {e}")
             try:
                 existing = vectordb.get()
                 existing_texts = existing.get("documents", []) if isinstance(existing, dict) else []
@@ -134,8 +138,11 @@ def add_texts_to_session(user_id: str, session_id: str, text: str) -> dict:
 
 def get_session_retriever(user_id: str, session_id: str):
     sd = _session_dir(user_id, session_id)
+    print(f"DEBUG: Looking for session retriever at {sd}")
     if not os.path.exists(sd) or not os.listdir(sd):
+        print(f"DEBUG: Session vector store not found at {sd}")
         return None
+    print(f"DEBUG: Session vector store found, creating retriever")
     db = Chroma(persist_directory=sd, embedding_function=embeddings)
     return db.as_retriever(search_kwargs={"k":4})
 
