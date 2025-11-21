@@ -42,6 +42,11 @@ async def unified_chat(payload: ChatRequest):
     question = payload.question
     index_user = bool(payload.index_user)
 
+    print(f"DEBUG: Received request - user_id={user_id}, session_id={session_id}")
+    print(f"DEBUG: file_contents length: {len(file_contents)}")
+    print(f"DEBUG: question: {question}")
+    print(f"DEBUG: index_user: {index_user}")
+
     ok, err = validate_input(user_id, session_id, question, file_contents)
     if not ok:
         return {"user_id": user_id, "session_id": session_id, "error": err}

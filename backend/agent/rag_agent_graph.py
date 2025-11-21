@@ -21,15 +21,30 @@ def generate_node(payload: Dict[str, Any]) -> Dict[str, Any]:
     docs: List[object] = payload.get("retrieved_docs", [])
     question: str = payload.get("question", "")
 
+    # Debug logging
+    print(f"DEBUG: Retrieved {len(docs)} documents")
+
     context_parts = []
     for i, d in enumerate(docs):
         text = getattr(d, "page_content", None) or getattr(d, "content", None) or str(d)
-        snippet = text[:1200]
+        snippet = text[:2000]  # Increased from 1200 to 2000
+        print(f"DEBUG: Doc {i+1} snippet (first 200 chars): {snippet[:200]}")
         context_parts.append(f"[DOC {i+1}]\n{snippet}")
     context_text = "\n\n".join(context_parts)
 
-    prompt = ANSWER_SYSTEM_PROMPT + "\n\nContext:\n" + context_text + "\n\nUser question:\n" + question + \
-             "\n\nInstructions: Answer concisely based only on the context above. If context doesn't contain the answer, say \"I don't have enough information to answer that.\" Also include a short Sources: section with short excerpts."
+    prompt = f"""You are a helpful AI assistant. Answer the user's question based on the provided context.
+
+Context:
+{context_text}
+
+User Question: {question}
+
+Instructions:
+- Answer the question using information from the context above
+- If you can provide a helpful answer from the context, do so
+- Only say "I don't have enough information" if the context is completely irrelevant to the question
+- Be helpful and informative
+- Include specific details from the context in your answer"""
 
     try:
         resp = llm.invoke(prompt)
